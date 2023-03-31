@@ -1,4 +1,4 @@
-from itertools import permutations, combinations
+from itertools import combinations, product
 
 from Investimento import Investimento
 from Risco import Risco
@@ -29,7 +29,7 @@ class Otimizador:
                 raise ValueError(
                     "Não existe solução. É impossível escolher o número mínimo de investimentos sem exceder o orçamento")
 
-    def solucao_inicial(self) -> list[Investimento]:
+    def solucao_possivel(self) -> list[Investimento]:
 
         self.solucao_minima()
         selecionados = []
@@ -39,15 +39,24 @@ class Otimizador:
                                          investimento.risco == risco]
             investimentos_desse_risco.sort(key=lambda x: x.custo)
             combinacoes = combinations(investimentos_desse_risco, min)
-            ideal = 0
-            custo_atual = sum(investimento.custo for investimento in selecionados)
+            possivel_risco = []
             for combinacao in combinacoes:
                 custo = sum(investimento.custo for investimento in combinacao)
-                if custo < max and custo_atual + custo < self.orcamento:
-                    taxa = sum(investimento.taxaRetorno for investimento in combinacao)
-                    if taxa > ideal:
-                        selecionados_risco = combinacao
-                        ideal = taxa
-            for selecionado in selecionados_risco:
-                selecionados.append(selecionado)
+                if custo < max and custo < self.orcamento:
+                    possivel_risco.append(combinacao)
+            selecionados.append(possivel_risco)
         return selecionados
+
+    def melhor_solucao(self, selecionados: list[Investimento]) -> list[Investimento]:
+        ideal = 0
+        for produtos in product(selecionados[0], selecionados[1], selecionados[2]):
+            soma = 0
+            taxa = 0
+            for produtos_risco in produtos:
+                for investimento in produtos_risco:
+                    soma += investimento.custo
+                    taxa += investimento.taxaRetorno
+            if soma <= self.orcamento and taxa > ideal:
+                resultado = produtos
+                ideal = taxa
+        return resultado

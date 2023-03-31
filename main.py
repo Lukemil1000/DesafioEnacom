@@ -34,10 +34,10 @@ def main():
 
     otimizador = Otimizador(investimentos, max_gasto_risco, min_investimento_risco, orcamento)
 
-    for investimento in otimizador.solucao_inicial():
+    possivel = otimizador.solucao_possivel()
+    resultado = otimizador.melhor_solucao(possivel)
+    for investimento in resultado:
         print(investimento)
-    print(sum(investimento.custo for investimento in otimizador.solucao_inicial()))
-    print(sum(investimento.taxaRetorno for investimento in otimizador.solucao_inicial()))
 
 
 if __name__ == '__main__':
