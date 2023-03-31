@@ -1,9 +1,10 @@
 from Investimento import Investimento
+from Otimizador import Otimizador
 from Risco import Risco
 
 
 def main():
-    investimentos = [Investimento("Ampliação da capacidade do armazém ZDP em 5%	", 470_000, 410_000, Risco.BAIXO),
+    investimentos = [Investimento("Ampliação da capacidade do armazém ZDP em 5%", 470_000, 410_000, Risco.BAIXO),
                      Investimento("Ampliação da capacidade do armazém MGL em 7%", 400_000, 330_000, Risco.BAIXO),
                      Investimento("Compra de empilhadeira", 170_000, 140_000, Risco.MEDIO),
                      Investimento("Projeto de P&D I", 270_000, 250_000, Risco.MEDIO),
@@ -22,11 +23,24 @@ def main():
         Risco.MEDIO: 1_500_000,
         Risco.ALTO: 900_000
     }
+
     min_investimento_risco = {
         Risco.BAIXO: 2,
         Risco.MEDIO: 2,
         Risco.ALTO: 1
     }
+
+    orcamento = 2_400_000
+
+    solucao = []
+
+    otimizador = Otimizador(investimentos, max_gasto_risco, min_investimento_risco, orcamento)
+    for permutacao in otimizador.solucao_inicial():
+        for investimento in permutacao:
+            solucao.append(investimento)
+
+    for investimento in solucao:
+        print(investimento)
 
 
 if __name__ == '__main__':
