@@ -37,6 +37,7 @@ def main():
     for investimento in otimizador.solucao_inicial():
         print(investimento)
     print(sum(investimento.custo for investimento in otimizador.solucao_inicial()))
+    print(sum(investimento.taxaRetorno for investimento in otimizador.solucao_inicial()))
 
 
 if __name__ == '__main__':
