@@ -20,11 +20,14 @@ class Otimizador:
             investimentos_desse_risco = [investimento for investimento in self.investimentos if
                                          investimento.risco == risco]
             investimentos_desse_risco.sort(key=lambda x: x.custo)
+            if len(investimentos_desse_risco) < min:
+                raise ValueError(f"Não existe solução. A entrada não apresenta o minimo de investimentos do risco"
+                                 f" {risco} para satisfazer a condição de seleção")
             investimentos_minimo = investimentos_desse_risco[0:min]
             custo_minimo = sum(investimento.custo for investimento in investimentos_minimo)
             custo_atual = sum(investimento.custo for investimento in selecionados)
             if custo_minimo > max:
-                raise ValueError(f"Não existe solução. O custo mínimo do risco {risco} é maior que o teto")
+                raise ValueError(f"Não existe solução. O custo mínimo do risco {risco} é maior que o teto para esse risco")
             if custo_minimo + custo_atual > self.orcamento:
                 raise ValueError(
                     "Não existe solução. É impossível escolher o número mínimo de investimentos sem exceder o orçamento")
@@ -42,7 +45,7 @@ class Otimizador:
             possivel_risco = []
             for combinacao in combinacoes:
                 custo = sum(investimento.custo for investimento in combinacao)
-                if custo < max and custo < self.orcamento:
+                if custo <= max and custo <= self.orcamento:
                     possivel_risco.append(combinacao)
             selecionados.append(possivel_risco)
         return selecionados
@@ -79,11 +82,14 @@ class Otimizador:
                 soma = sum(investimento.custo for investimento in lista_temp) + i.custo
                 soma_risco = sum(investimento.custo for investimento in lista_temp if
                                  investimento.risco == i.risco) + i.custo
-                if soma < self.orcamento and soma_risco < self.max_gasto_risco[i.risco]:
+                if soma <= self.orcamento and soma_risco <= self.max_gasto_risco[i.risco]:
                     lista_temp.append(i)
             investimentos_nao_usados.append(investimentos_nao_usados.pop(0))
             if sum(investimento.taxaRetorno for investimento in lista_temp) > ideal:
                 lista_otimizada = [investimento for investimento in lista_temp]
                 ideal = sum(investimento.taxaRetorno for investimento in lista_otimizada)
             lista_temp = [investimento for investimento in lista]
-        return lista_otimizada
+        try:
+            return lista_otimizada
+        except UnboundLocalError:
+            return lista

@@ -37,6 +37,7 @@ def main():
     possivel = otimizador.solucao_possivel()
     resultado = otimizador.melhor_solucao(possivel)
     otimizado = otimizador.otimizar(resultado)
+
     for investimento in otimizado:
         print(investimento)
     print(f"Custo total: {sum(investimento.custo for investimento in otimizado)}")
