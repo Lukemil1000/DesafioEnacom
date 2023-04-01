@@ -28,6 +28,7 @@ class Otimizador:
             if custo_minimo + custo_atual > self.orcamento:
                 raise ValueError(
                     "Não existe solução. É impossível escolher o número mínimo de investimentos sem exceder o orçamento")
+            selecionados += investimentos_minimo
 
     def solucao_possivel(self) -> list[Investimento]:
 
@@ -37,7 +38,6 @@ class Otimizador:
             min = self.min_investimento_risco[risco]
             investimentos_desse_risco = [investimento for investimento in self.investimentos if
                                          investimento.risco == risco]
-            investimentos_desse_risco.sort(key=lambda x: x.custo)
             combinacoes = combinations(investimentos_desse_risco, min)
             possivel_risco = []
             for combinacao in combinacoes:
@@ -60,3 +60,25 @@ class Otimizador:
                 resultado = produtos
                 ideal = taxa
         return resultado
+
+    def otimizar(self, selecionados: list[Investimento]) -> list[Investimento]:
+        lista = []
+        investimentos_nao_usados = self.investimentos
+        for x in selecionados:
+            for y in x:
+                lista.append(y)
+                try:
+                    investimentos_nao_usados.remove(y)
+                except:
+                    pass
+        investimentos_nao_usados.sort(key=lambda l: l.taxaRetorno, reverse=True)
+        lista_temp = lista
+        ideal = 0
+        for i in range(len(investimentos_nao_usados)):
+            soma = sum(l.custo for l in lista) + investimentos_nao_usados[i].custo
+            soma_risco = sum(investimento.custo for investimento in lista if
+                             investimento.risco == investimentos_nao_usados[i].risco) + investimentos_nao_usados[i].custo
+            if soma < self.orcamento and soma_risco < self.max_gasto_risco[investimentos_nao_usados[i].risco]:
+                if sum(investimento.taxaRetorno for investimento in lista) + investimentos_nao_usados[i].taxaRetorno > ideal:
+                    lista_temp.append(investimentos_nao_usados[i])
+        return lista
