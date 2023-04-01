@@ -12,4 +12,4 @@ class Investimento:
         self.taxaRetorno = retorno / custo
 
     def __str__(self):
-        return f"{self.name}, {self.taxaRetorno}"
+        return f"Nome: {self.name}, Taxa de retorno: {self.taxaRetorno}, Custo: {self.custo}, Retorno: {self.retorno}"

@@ -39,9 +39,11 @@ def main():
     otimizado = otimizador.otimizar(resultado)
     for investimento in otimizado:
         print(investimento)
-    print(sum(investimento.custo for investimento in otimizado))
-
-    teste = "abc"
+    print(f"Custo total: {sum(investimento.custo for investimento in otimizado)}")
+    print(f"Custo risco baixo: {sum(investimento.custo for investimento in otimizado if investimento.risco == Risco.BAIXO)}")
+    print(f"Custo risco médio: {sum(investimento.custo for investimento in otimizado if investimento.risco == Risco.MEDIO)}")
+    print(f"Custo risco alto: {sum(investimento.custo for investimento in otimizado if investimento.risco == Risco.ALTO)}")
+    print(f"Taxa de retorno média: {sum(investimento.taxaRetorno for investimento in otimizado)/len(otimizado)}")
 
 
 if __name__ == '__main__':

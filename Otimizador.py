@@ -72,13 +72,18 @@ class Otimizador:
                 except:
                     pass
         investimentos_nao_usados.sort(key=lambda l: l.taxaRetorno, reverse=True)
-        lista_temp = lista
+        lista_temp = [investimento for investimento in lista]
         ideal = 0
-        for i in range(len(investimentos_nao_usados)):
-            soma = sum(l.custo for l in lista) + investimentos_nao_usados[i].custo
-            soma_risco = sum(investimento.custo for investimento in lista if
-                             investimento.risco == investimentos_nao_usados[i].risco) + investimentos_nao_usados[i].custo
-            if soma < self.orcamento and soma_risco < self.max_gasto_risco[investimentos_nao_usados[i].risco]:
-                if sum(investimento.taxaRetorno for investimento in lista) + investimentos_nao_usados[i].taxaRetorno > ideal:
-                    lista_temp.append(investimentos_nao_usados[i])
-        return lista
+        for j in range(len(investimentos_nao_usados)):
+            for i in investimentos_nao_usados:
+                soma = sum(investimento.custo for investimento in lista_temp) + i.custo
+                soma_risco = sum(investimento.custo for investimento in lista_temp if
+                                 investimento.risco == i.risco) + i.custo
+                if soma < self.orcamento and soma_risco < self.max_gasto_risco[i.risco]:
+                    lista_temp.append(i)
+            investimentos_nao_usados.append(investimentos_nao_usados.pop(0))
+            if sum(investimento.taxaRetorno for investimento in lista_temp) > ideal:
+                lista_otimizada = [investimento for investimento in lista_temp]
+                ideal = sum(investimento.taxaRetorno for investimento in lista_otimizada)
+            lista_temp = [investimento for investimento in lista]
+        return lista_otimizada
