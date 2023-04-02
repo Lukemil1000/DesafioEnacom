@@ -40,11 +40,20 @@ def main():
 
     for investimento in otimizado:
         print(investimento)
-    print(f"Custo total: {sum(investimento.custo for investimento in otimizado)}")
-    print(f"Custo risco baixo: {sum(investimento.custo for investimento in otimizado if investimento.risco == Risco.BAIXO)}")
-    print(f"Custo risco médio: {sum(investimento.custo for investimento in otimizado if investimento.risco == Risco.MEDIO)}")
-    print(f"Custo risco alto: {sum(investimento.custo for investimento in otimizado if investimento.risco == Risco.ALTO)}")
-    print(f"Taxa de retorno média: {sum(investimento.taxaRetorno for investimento in otimizado)/len(otimizado)}")
+
+    custo = sum(investimento.custo for investimento in otimizado)
+    custo_baixo = sum(investimento.custo for investimento in otimizado if investimento.risco == Risco.BAIXO)
+    custo_medio = sum(investimento.custo for investimento in otimizado if investimento.risco == Risco.MEDIO)
+    custo_alto = sum(investimento.custo for investimento in otimizado if investimento.risco == Risco.ALTO)
+    retorno = sum(investimento.retorno for investimento in otimizado)
+    retorno_medio = retorno/custo
+
+    print(f"Custo total: {custo}")
+    print(f"Custo risco baixo: {custo_baixo}")
+    print(f"Custo risco médio: {custo_medio}")
+    print(f"Custo risco alto: {custo_alto}")
+    print(f"Retorno: {retorno}")
+    print(f"Taxa de retorno média: {retorno_medio}")
 
 
 if __name__ == '__main__':
